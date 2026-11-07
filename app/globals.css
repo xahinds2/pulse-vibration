@@ -50,3 +50,4 @@
 .pattern-views{display:flex;gap:4px;background:#eee8f5;border-radius:12px;padding:4px;max-width:360px;margin-bottom:24px}.pattern-views button{flex:1;min-height:44px;border:0;border-radius:9px;background:transparent;color:#79618f;font-size:13px}.pattern-views button[aria-pressed=true]{background:#fffefa;color:#654b96;box-shadow:0 2px 5px #44305b10}.remote-grid.remote-single{grid-template-columns:minmax(0,1fr);max-width:700px}.remote-single .remote-note{grid-column:1}
 
 .practice-profiles{width:100%;margin-top:0}.available-users:has(.available-user)+.practice-profiles{margin-top:12px}.practice-profiles>.available-user:first-child{border-top:0;padding-top:0}
+.directory-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}.directory-refresh{border:1px solid #e3d9ee;background:#f5f1fa}.directory-refresh[aria-busy=true] .icon{animation:refresh-spin 1s linear infinite}@keyframes refresh-spin{to{transform:rotate(360deg)}}

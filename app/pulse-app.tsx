@@ -78,6 +78,7 @@ export default function PulseApp() {
   const [username, setUsername] = useState("");
   const [users, setUsers] = useState<AvailableUser[]>([]);
   const [directoryLoading, setDirectoryLoading] = useState(true);
+  const [directoryRefresh, setDirectoryRefresh] = useState(0);
   const [directoryError, setDirectoryError] = useState("");
   const [mode, setMode] = useState<"single" | "multiple">("single");
   const [requireApproval, setRequireApproval] = useState(false);
@@ -210,7 +211,7 @@ export default function PulseApp() {
     }
     void load();
     return () => { cancelled = true; clearTimeout(refresh); };
-  }, [tab]);
+  }, [tab, directoryRefresh]);
 
   useEffect(() => {
     if (tab !== "Patterns" || patternView !== "Playlist") return;
@@ -357,12 +358,12 @@ export default function PulseApp() {
       </div>}
       {(tab === "Control" || tab === "Users") && <section className="remote-grid remote-single">
         {tab === "Users" && <article className="remote-card directory-card">
-          <span className="eyebrow">ONLINE NOW</span><h2>Take control</h2>
+          <div className="directory-heading"><div><span className="eyebrow">ONLINE NOW</span><h2>Take control</h2></div><button className="connection-icon directory-refresh" aria-label="Refresh users" title="Refresh users" aria-busy={directoryLoading} disabled={directoryLoading} onClick={() => { setDirectoryLoading(true); setDirectoryRefresh(value => value + 1); }}><Icon name="refresh" /></button></div>
           {session?.role === "controller" ? <div className="paired"><strong>{pending ? "Waiting for approval…" : session.practiceName ? `Connected to ${session.practiceName}.` : "You’re connected."}</strong><p>{pending ? "Voice and vibration start after they accept." : session.practiceName ? "Demo connection · preview rhythms on this device. No microphone or other phone needed." : "Your next rhythm is one tap away."}</p>{connected && <button className="primary" onClick={() => setTab("Live")}>Open live control <Icon name="arrow" /></button>}</div> : <>
             <p>Connect to someone who has turned on Give control.</p>
             <div className="available-users" aria-live="polite">
 
-              {directoryError ? <p className="error">{directoryError}</p> : directoryLoading ? <p>Finding available users…</p> : users.filter(user => user.code !== session?.code).map(user => <div className="available-user" key={user.code}>
+              {directoryError ? <p className="error">{directoryError}</p> : directoryLoading && users.length === 0 ? <p>Finding available users…</p> : users.filter(user => user.code !== session?.code).map(user => <div className="available-user" key={user.code}>
                 <span className="user-avatar" aria-hidden="true">{user.username.slice(0, 1).toUpperCase()}</span>
                 <div><strong>@{user.username}</strong><small>{user.mode === "single" ? "Single" : "Multiple"} · {user.requireApproval ? "Approval needed" : "Open to connect"} · {user.enableCall ? "Voice on" : "Vibration only"}</small></div>
                 <button className="secondary" disabled={busy || !!session || (user.count >= (user.mode === "single" ? 1 : 8))} onClick={() => pair("controller", user.code)}>{user.count >= (user.mode === "single" ? 1 : 8) ? "Busy" : user.requireApproval ? "Request" : "Connect"}</button>
